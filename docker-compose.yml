@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:17-alpine
+    container_name: predictive_action_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: predictive_action
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d predictive_action"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Ollama for local LLM
+  ollama:
+    image: ollama/ollama:latest
+    container_name: predictive_action_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  # Redis (for caching/session)
+  redis:
+    image: redis:7-alpine
+    container_name: predictive_action_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # API Backend
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: predictive_action_api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/predictive_action
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=ingu627/exaone4.0:1.2b
+      - FRONTEND_URL=http://localhost:5173
+      - DEBUG=true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    volumes:
+      - ./backend:/app
+      - ./backend/.venv:/app/.venv
+
+  # Frontend (development with Vite)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: predictive_action_frontend
+    ports:
+      - "5173:5173
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+  ollama_data:
+  redis_data:

@@ -1,0 +1,16 @@
+employee_id,department,tenure_months,salary,satisfaction,absences,performance
+EMP001,Engineering,24,75000,4.0,3,4.5
+EMP002,Sales,12,60000,3.5,5,3.8
+EMP003,Marketing,36,70000,4.2,2,4.2
+EMP004,Engineering,6,65000,2.5,8,3.0
+EMP005,HR,48,68000,3.8,4,3.9
+EMP006,Sales,3,55000,1.8,12,2.2
+EMP007,Engineering,60,120000,4.5,1,4.8
+EMP008,Finance,18,72000,3.2,6,3.5
+EMP009,Marketing,9,62000,2.0,10,2.8
+EMP010,Engineering,120,150000,4.8,0,4.9
+EMP011,Sales,24,65000,3.0,7,3.4
+EMP012,HR,30,71000,3.9,3,4.0
+EMP013,Engineering,8,63000,1.5,15,2.0
+EMP014,Finance,42,78000,4.1,2,4.3
+EMP015,Marketing,15,64000,2.8,8,3.2
