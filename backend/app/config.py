@@ -13,7 +13,7 @@ class Settings(BaseSettings):
 
     # LLM (Ollama local)
     ollama_base_url: str = "http://localhost:11434"
-    ollama_model: str = "ingu627/exaone4.0:1.2b"  # Local model
+    ollama_model: str = "granite3.1-moe:3b"  # Local model (IBM Granite 3.1 MoE)
 
     # Database (for future Prisma integration)
     database_url: str = "postgresql://user:password@localhost:5432/predictive_action"
